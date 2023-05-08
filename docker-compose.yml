@@ -1,0 +1,36 @@
+version: '3'
+services:
+  mongo:
+    container_name: user_mongodb
+    image: mongo:latest
+    networks:
+      - gateway
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+  node:
+    container_name: user_node
+    restart: always
+    build: .
+    networks:
+      - gateway
+    ports:
+      - 3001:3001
+    volumes:
+      - .:/usr/src/app
+    environment:
+      MONGODB_URL: mongodb://mongo:27017/minichat-user-MS
+      PORT: 3001
+      TOKEN_KEY: somesecrets
+      YOUR_DOMAIN: http://localhost:3001
+
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+volumes:
+  mongo: {}
+networks:
+  gateway: {}
