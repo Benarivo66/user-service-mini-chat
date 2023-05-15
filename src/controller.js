@@ -1,9 +1,14 @@
-const express = require("express");
 const jwt = require("jsonwebtoken");
 const { hash, verify } = require("./helper/auth");
 const { create, getByEmail } = require("./service");
 
+let isSignup = false;
+let isLogin = false;
+let socketObject = { isSignup, isLogin, email: "" }
+
 const tokenKey = process.env.TOKEN_KEY;
+
+console.log({tokenKey})
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -23,7 +28,8 @@ const signup = async (req, res) => {
     });
 
     user.token = token;
-
+    socketObject.isSignup = true;
+    socketObject.email = user.email;
     res.status(201).json({ message: "User created successfully", data: user });
   } catch (err) {
     console.error(err);
@@ -52,8 +58,8 @@ const login = async (req, res) => {
     });
 
     user.token = token;
-
-
+    socketObject.isLogin = true;
+    socketObject.email = user.email;
     res.status(200).json({ message: "Login successful", data: user });
   } catch (err) {
     console.error(err);
@@ -64,4 +70,5 @@ const login = async (req, res) => {
 module.exports = {
   signup,
   login,
+  socketObject,
 };
