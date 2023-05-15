@@ -20,7 +20,7 @@ services:
     volumes:
       - .:/usr/src/app
     environment:
-      MONGODB_URL: mongodb://mongo:27017/minichat-user-MS
+      MONGO_URL: mongodb://mongo:27017/minichat-user-MS
       PORT: 3001
       TOKEN_KEY: somesecrets
       YOUR_DOMAIN: http://localhost:3001
