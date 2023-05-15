@@ -2,10 +2,11 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const http = require('http');
-
 const socketIo = require('socket.io');
 
 require("dotenv").config();
+
+const { socketObject } = require("./src/controller")
 
 const userRoutes = require("./src/routes");
 const { init } = require("./config/db");
@@ -22,16 +23,24 @@ app.use('/', userRoutes);
 init();
 
 const server = http.createServer(app);
-const io = socketIo(server);
 
 const PORT = process.env.PORT;
-
-io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  io.emit('user-connected', { message: 'A user connected' });
-});
 
 server.listen(PORT, () => {
   console.log(`user-service is running on port ${PORT}`);
 });
+
+const io = socketIo(server);
+
+io.on("connection", (socket) => {
+  console.log("connecting to message service");
+  if(socketObject.isLogin){
+    io.emit("user-login", { message:`${socketObject.email} successfully logged in`})
+  };
+  if(socketObject.isSignup){
+    io.emit("user-signup", { message:`${socketObject.email} successfully signed up`})
+  };
+});
+
+module.exports = { server }
+
