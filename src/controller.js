@@ -8,8 +8,6 @@ let socketObject = { isSignup, isLogin, email: "" }
 
 const tokenKey = process.env.TOKEN_KEY;
 
-console.log({tokenKey})
-
 const signup = async (req, res) => {
   const { email, password } = req.body;
 
